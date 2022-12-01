@@ -1,3 +1,3 @@
 # Dmytro Verovkin
 ## robot_dreams
-My repusitory for studying Python
+My repository for studying Python

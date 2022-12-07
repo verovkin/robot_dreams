@@ -21,12 +21,7 @@ def main():
             if float(user_input):
                 print("You entered a float number, it can't be ODD or EVEN")
         except ValueError:
-
-            # check if it's a word
-            if user_input.isalpha():
-                print(f"You entered a WORD with {len(user_input)} letters")
-            else:
-                print("You entered something mysterious")
+            print(f"You entered a WORD with {len(user_input)} letters")
 
 
 if __name__ == "__main__":

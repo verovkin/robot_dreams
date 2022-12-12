@@ -11,4 +11,4 @@ import time
 
 while True:
     print("I love Python")
-    time.sleep(2.4)
+    time.sleep(4.2)

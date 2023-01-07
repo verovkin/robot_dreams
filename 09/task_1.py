@@ -29,15 +29,15 @@ def get_fibonacci_element_by_index(i):
 while True:
     user_input = input("Enter index number of Fibonacci sequence: ")
     try:
-        index = int(user_input)
+        num_index = int(user_input)
     except ValueError:
         print("Enter integer number!")
         continue
-    if index < 0:
+    if num_index < 0:
         print("Enter positive number!")
         continue
     break
 
 
-number = get_fibonacci_element_by_index(index)
-print(f"Fibonacci number with index {index} is {number}")
+number = get_fibonacci_element_by_index(num_index)
+print(f"Fibonacci number with index {num_index} is {number}")

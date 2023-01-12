@@ -8,7 +8,8 @@ robot_dreams
 
 
 class MyCustomException(Exception):
-    pass
+    def __init__(self, message="Custom exception is occurred"):
+        self.message = message
+        super().__init__(self.message)
 
-
-raise MyCustomException('Custom exception is occurred')
+raise MyCustomException

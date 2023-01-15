@@ -38,8 +38,7 @@ PHONE_BOOK_BD_FILE = 'phonebook.json'
 if not path.exists(PHONE_BOOK_BD_FILE):
     with open(PHONE_BOOK_BD_FILE, 'w') as f:
         empty_phone_book = {}
-        json_data = json.dumps(empty_phone_book)
-        f.write(json_data)
+        json.dump(empty_phone_book, f)
 
 
 def rewrite_JSONed(file, raw_data):
@@ -49,23 +48,20 @@ def rewrite_JSONed(file, raw_data):
     :param raw_data: data to convert to JSON and save
     :return:
     """
-    json_data = json.dumps(raw_data)
     file.truncate(0)
     file.seek(0)
-    file.write(json_data)
+    json.dump(raw_data, file)
 
 
 def get_stat():
     with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        file_data = f.read()
-        phone_book = json.loads(file_data)
+        phone_book = json.load(f)
         print(f"Total {len(phone_book)} entries")
 
 
 def add_to_phonebook(name, phone):
     with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        file_data = f.read()
-        phone_book = json.loads(file_data)
+        phone_book = json.load(f)
 
         if name in phone_book:
             return False
@@ -77,8 +73,7 @@ def add_to_phonebook(name, phone):
 
 def delete_from_phonebook(name):
     with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        file_data = f.read()
-        phone_book = json.loads(file_data)
+        phone_book = json.load(f)
 
         if name not in phone_book:
             return False
@@ -90,8 +85,7 @@ def delete_from_phonebook(name):
 
 def list_all_from_phonebook():
     with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        file_data = f.read()
-        phone_book = json.loads(file_data)
+        phone_book = json.load(f)
 
         if len(phone_book) > 0:
             for key, value in phone_book.items():
@@ -102,8 +96,7 @@ def list_all_from_phonebook():
 
 def show_from_phonebook(name):
     with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        file_data = f.read()
-        phone_book = json.loads(file_data)
+        phone_book = json.load(f)
         print(f"{name} {phone_book[name] if name in phone_book else 'not found'}")
 
 

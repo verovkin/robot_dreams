@@ -12,15 +12,23 @@ robot_dreams
 
 
 from os import path
+import sys
 import re
-import argparse
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('filename')
-# args = parser.parse_args()
 
-# txt_file = args.filename
-txt_file = 'email'
+# if user not entered argument - ask to input filename
+if len(sys.argv) < 2:
+    txt_file = input("Enter filename: ")
+else:
+    txt_file = sys.argv[1]
+
+# check if file exist:
+if not path.exists(txt_file):
+    print(f"File '{txt_file}' not found")
+    exit()
+
+with open(txt_file, 'r') as f:
+    text = f.read()
 
 email_regex = re.compile(r'(?<=.).(?=[^@]*?@)|(?:(?<=@)|(?!^)(?=[^@]*$))(.)(?=.*\.)|(?:(?<=\.)(?=[^.]+$)|(?!^)(?=[^@.]*$))[^.](?!$)', re.MULTILINE)
 

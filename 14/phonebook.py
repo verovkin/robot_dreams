@@ -31,75 +31,50 @@ help               - shows this help message
 
 PHONE_BOOK_BD_FILE = 'phonebook.json'
 
-# check if database file is exist. if not - create empty
-if not path.exists(PHONE_BOOK_BD_FILE):
-    with open(PHONE_BOOK_BD_FILE, 'w') as f:
-        empty_phone_book = {}
-        json.dump(empty_phone_book, f)
-
-
-def rewrite_JSONed(file, raw_data):
-    """
-    Converts RAW data into JSON and rewrites to an open file
-    :param file:file instance
-    :param raw_data: data to convert to JSON and save
-    :return:
-    """
-    file.truncate(0)
-    file.seek(0)
-    json.dump(raw_data, file)
+try:
+    with open(PHONE_BOOK_BD_FILE, 'r') as f:
+        phone_book = json.load(f)
+except FileNotFoundError:
+    phone_book = {}
 
 
 def get_stat():
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-        print(f"Total {len(phone_book)} entries")
+    print(f"Total {len(phone_book)} entries")
 
 
 def add_to_phonebook(name, phone):
-    with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        phone_book = json.load(f)
-
-        if name in phone_book:
-            print(f"{name} is already exist")
-            return False
+    if name in phone_book:
+        print(f"{name} is already exist")
+    else:
+        if validate_phone(phone):
+            phone_book[name] = phone
+            with open(PHONE_BOOK_BD_FILE, 'w') as f:
+                json.dump(phone_book, f)
+            print("Added successfully")
         else:
-            if validate_phone(phone):
-                phone_book[name] = phone
-                rewrite_JSONed(f, phone_book)
-                return True
-            else:
-                print("Phone number is incorrect!")
-                return False
+            print("Phone number is incorrect!")
 
 
 def delete_from_phonebook(name):
-    with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        phone_book = json.load(f)
-
-        if name not in phone_book:
-            return False
-        else:
-            del phone_book[name]
-            rewrite_JSONed(f, phone_book)
-            return True
+    if name not in phone_book:
+        return False
+    else:
+        del phone_book[name]
+        with open(PHONE_BOOK_BD_FILE, 'w') as f:
+            json.dump(phone_book, f)
+        return True
 
 
 def list_all_from_phonebook():
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-
-        if len(phone_book) > 0:
-            for key, value in phone_book.items():
-                print(f"{key} {value}")
-        else:
-            print("empty")
+    if len(phone_book) > 0:
+        for key, value in phone_book.items():
+            print(f"{key} {value}")
+    else:
+        print("empty")
 
 
 def show_from_phonebook(name):
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-        print(f"{name} {phone_book[name] if name in phone_book else 'not found'}")
+    print(f"{name} {phone_book[name] if name in phone_book else 'not found'}")
 
 
 def validate_phone(phone):
@@ -121,8 +96,7 @@ while True:
             get_stat()
         case 'add':
             if len(user_input_split) == 3:  # check if user entered correct number of arguments
-                if add_to_phonebook(user_input_split[1], user_input_split[2]):
-                    print("Added successfully")
+                add_to_phonebook(user_input_split[1], user_input_split[2])
             else:
                 print("Wrong arguments, please use format: add <name> <phone>")
         case 'delete':

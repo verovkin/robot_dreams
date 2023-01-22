@@ -30,74 +30,50 @@ help               - shows this help message
 --------------------------------------------------------------------------------------------------
 """
 
-from os import path
 
 PHONE_BOOK_BD_FILE = 'phonebook.json'
 
-# check if database file is exist. if not - create empty
-if not path.exists(PHONE_BOOK_BD_FILE):
-    with open(PHONE_BOOK_BD_FILE, 'w') as f:
-        empty_phone_book = {}
-        json.dump(empty_phone_book, f)
-
-
-def rewrite_JSONed(file, raw_data):
-    """
-    Converts RAW data into JSON and rewrites to an open file
-    :param file:file instance
-    :param raw_data: data to convert to JSON and save
-    :return:
-    """
-    file.truncate(0)
-    file.seek(0)
-    json.dump(raw_data, file)
+try:
+    with open(PHONE_BOOK_BD_FILE, 'r') as f:
+        phone_book = json.load(f)
+except FileNotFoundError:
+    phone_book = {}
 
 
 def get_stat():
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-        print(f"Total {len(phone_book)} entries")
+    print(f"Total {len(phone_book)} entries")
 
 
 def add_to_phonebook(name, phone):
-    with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        phone_book = json.load(f)
-
-        if name in phone_book:
-            return False
-        else:
-            phone_book[name] = phone
-            rewrite_JSONed(f, phone_book)
-            return True
+    if name in phone_book:
+        return False
+    else:
+        phone_book[name] = phone
+        with open(PHONE_BOOK_BD_FILE, 'w') as f:
+            json.dump(phone_book, f)
+        return True
 
 
 def delete_from_phonebook(name):
-    with open(PHONE_BOOK_BD_FILE, 'r+') as f:
-        phone_book = json.load(f)
-
-        if name not in phone_book:
-            return False
-        else:
-            del phone_book[name]
-            rewrite_JSONed(f, phone_book)
-            return True
+    if name not in phone_book:
+        return False
+    else:
+        del phone_book[name]
+        with open(PHONE_BOOK_BD_FILE, 'w') as f:
+            json.dump(phone_book, f)
+        return True
 
 
 def list_all_from_phonebook():
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-
-        if len(phone_book) > 0:
-            for key, value in phone_book.items():
-                print(f"{key} {value}")
-        else:
-            print("empty")
+    if len(phone_book) > 0:
+        for key, value in phone_book.items():
+            print(f"{key} {value}")
+    else:
+        print("empty")
 
 
 def show_from_phonebook(name):
-    with open(PHONE_BOOK_BD_FILE, 'r') as f:
-        phone_book = json.load(f)
-        print(f"{name} {phone_book[name] if name in phone_book else 'not found'}")
+    print(f"{name} {phone_book[name] if name in phone_book else 'not found'}")
 
 
 while True:

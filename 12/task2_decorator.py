@@ -14,8 +14,10 @@ def log_decorator(func):
     def wrap(*args, **kwargs):
         with open(LOG_FILE_NAME, 'a') as f:
             print(f"'{func.__name__}' called at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", file=f)
-        func(*args, **kwargs)       # calling a function
+        res = func(*args, **kwargs)       # calling a function
+        return res
     return wrap
+
 
 @log_decorator
 def function_1():
@@ -26,6 +28,12 @@ def function_2(a, b):
     print(f"function 2 is working, a + b = {a + b}")
 
 
+@log_decorator
+def function_with_return():
+    return 'returning string'
+
+
 function_1()
 function_2(1, 2)
+print(function_with_return())
 

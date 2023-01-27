@@ -17,10 +17,12 @@ import re
 
 
 # if user not entered argument - ask to input filename
-if len(sys.argv) < 2:
-    txt_file = input("Enter filename: ")
-else:
-    txt_file = sys.argv[1]
+# if len(sys.argv) < 2:
+#     txt_file = input("Enter filename: ")
+# else:
+#     txt_file = sys.argv[1]
+
+txt_file = 'email'
 
 # check if file exist:
 if not path.exists(txt_file):
@@ -30,7 +32,7 @@ if not path.exists(txt_file):
 with open(txt_file, 'r') as f:
     text = f.read()
 
-email_regex = re.compile(r'(?<=.).(?=[^@]*?@)|(?:(?<=@)|(?!^)(?=[^@]*$))(.)(?=.*\.)|(?:(?<=\.)(?=[^.]+$)|(?!^)(?=[^@.]*$))[^.](?!$)', re.MULTILINE)
+email_regex = re.compile(r'(?<=\w)(?![_.-])((?![_.-][_.-])[a-zA-Z\d_.-]){0,63}[a-zA-Z\d]@(((?!-)((?!--)[a-zA-Z\d-]){1,63}[a-zA-Z\d]\.[a-zA-Z]{2,14})(\.[a-zA-Z]{2,14})*)(?=\w)', re.MULTILINE)
 
 
 # check if file exist:
@@ -41,8 +43,6 @@ if not path.exists(txt_file):
 
 with open(txt_file, 'r') as f:
     text = f.read()
-print(text)
-print()
 
 email_regex = r'(?<=.)((?![_.-])((?![_.-][_.-])[a-zA-Z\d_.-]){0,63}[a-zA-Z\d]@((?!-)((?!--)[a-zA-Z\d-]){0,63}[a-zA-Z\d]\.){1,2}([a-zA-Z]{2,14}\.)?[a-zA-Z]{2,14}?(?=.))'
 x = re.sub(email_regex, '***@****', text)

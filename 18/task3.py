@@ -9,7 +9,8 @@ robot_dreams
 
 class MyStr(str):
     def __str__(self):
-        return super().__str__().upper()
+        # return super().__str__().upper()
+        return self.upper()
 
 
 my_str = MyStr('test')

@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS usr(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT,
+    last_name TEXT,
+    age INTEGER
+)

@@ -1,0 +1,74 @@
+body {
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: #f3f2ef;
+    text-align: left;
+    padding-bottom: 15px;
+}
+
+header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    height: 53px;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 53px;
+}
+
+header > div > div > div:last-of-type { text-align: right;}
+
+p, ul, li { color: #999999; }
+
+.blok {
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.2);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: white;
+}
+
+.top_background {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    height: 200px;
+    position: relative;
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-bottom: 44px;
+}
+
+.photo {
+    position: absolute;
+    left: 24px;
+    bottom: -34px;
+    width: 152px;
+    height: 152px;
+    background-image: url("me.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 100%;
+    border: 4px solid white;
+}
+
+table tr td:nth-of-type(3),
+table tr th:nth-of-type(3) {
+    text-align: right;
+}
+
+table span {
+    margin-left: 5px;
+    font-size: 13px;
+    color: #999999;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+h3 {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}

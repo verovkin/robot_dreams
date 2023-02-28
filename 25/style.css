@@ -9,13 +9,16 @@ body {
 header {
     background-color: #FFFFFF;
     border-bottom: 1px solid rgba(0,0,0,0.08);
-    height: 53px;
+    /*height: 53px;*/
     font-size: 34px;
     font-weight: 600;
     line-height: 53px;
 }
 
 header > div > div > div:last-of-type { text-align: right;}
+
+
+
 
 p, ul, li { color: #999999; }
 
@@ -71,4 +74,10 @@ h3 {
     margin-top: 10px;
     font-size: 16px;
     font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    header div{ text-align: center !important; }
+    .photo{ left: calc(50% - 76px); }
+    h1 { text-align: center; }
 }

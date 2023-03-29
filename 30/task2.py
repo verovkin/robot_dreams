@@ -8,59 +8,70 @@ import requests
 
 
 class City:
-    def __init__(self, __name = None):
-        self.name = __name
-        self.get_weather()
+    def __init__(self, name):
+        self.name = name
+        self.set_coordinates()
 
-    def ask_city_name(self):
-        self.name = input("Enter location: ")
-        if self.name == 'exit':
-            print("Good bye!")
-            exit()
+    def set_coordinates(self):
+        self.lat, self.lon = WeatherService.get_coordinates(self.name)
 
-    def get_coordinates(self):
+    def print_weather(self):
+        weather_data = WeatherService.get_current_weather(self.lat, self.lon)
+        if weather_data:
+            print(f"The weather in {self.name} is - temperatute {weather_data['temperature']}°C and the wind speed is {weather_data['windspeed']} km/h")
+        else:
+            print(f"There is no weather for {self.name} city.")
 
-        while True:
-            # ask city
-            if self.name is None:
-                self.ask_city_name()
 
-            # request coordinates
-            CITY_API = f"https://geocoding-api.open-meteo.com/v1/search?name={self.name}&count=1"
+class WeatherService:
+    @classmethod
+    def get_coordinates(self, name):
+        # request coordinates
+        CITY_API = f"https://geocoding-api.open-meteo.com/v1/search?name={name}&count=1"
+
+        try:
             city_res = requests.get(CITY_API)
+        except requests.exceptions.ConnectionError as e:
+            raise ValueError("Check your internet connection")
 
-            if city_res.status_code == 200:
-                try:
-                    city_res_data = city_res.json()
-                    self.latitude = city_res_data.get("results")[0]["latitude"]
-                    self.longitude = city_res_data.get("results")[0]["longitude"]
-                except TypeError:
-                    print(f"Cannot find {self.name}, please try once more! Or type 'exit' to quit.")
-                    self.name = None
-                else:
-                    return True
+        if city_res.status_code == 200:
+            try:
+                city_res_data = city_res.json()
+                lat = city_res_data.get("results")[0]["latitude"]
+                lon = city_res_data.get("results")[0]["longitude"]
+            except TypeError:
+                raise ValueError('No such city')
 
-            else:  # if coordinates API is not available - quit
-                print("Error getting location coordinates, try later")
-                exit()
+            return lat, lon
 
-    def get_weather(self):
-        if self.get_coordinates():
+        else:  # if coordinates API is not available - quit
+            raise ValueError("Geo coordinate service is not working")
 
-            # weather API
-            WEATHER_FORECAST_API_URL = "https://api.open-meteo.com/v1/forecast"
-            weather_api_params = {
-                "latitude": self.latitude,
-                "longitude": self.longitude,
-                "current_weather": True,
-            }
+    @classmethod
+    def get_current_weather(self, lat, lon):
+        # weather API
+        WEATHER_FORECAST_API_URL = "https://api.open-meteo.com/v1/forecast"
+        weather_api_params = {
+            "latitude": lon,
+            "longitude": lat,
+            "current_weather": True,
+        }
+
+        try:
             weather_res = requests.get(WEATHER_FORECAST_API_URL, params=weather_api_params)
-            if weather_res.status_code == 200:
-                weather_res_data = weather_res.json().get("current_weather")
-                print(f"The weather in {self.name} is - temperatute {weather_res_data['temperature']}°C and the wind speed is {weather_res_data['windspeed']} km/h")
-            else:
-                print("Error getting a weather")
-                exit()
+        except requests.exceptions.ConnectionError as e:
+            raise ValueError("Check your internet connection")
+
+        if weather_res.status_code == 200:
+            return weather_res.json().get("current_weather")
+        else:
+            raise ValueError("Weather service is not working")
 
 
-city = City()
+city_name = input("Enter city: ")
+try:
+    city = City(city_name)
+except ValueError as e:
+    print(e)
+else:
+    city.print_weather()

@@ -52,8 +52,8 @@ class WeatherService:
         # weather API
         WEATHER_FORECAST_API_URL = "https://api.open-meteo.com/v1/forecast"
         weather_api_params = {
-            "latitude": lon,
-            "longitude": lat,
+            "latitude": lat,
+            "longitude": lon,
             "current_weather": True,
         }
 

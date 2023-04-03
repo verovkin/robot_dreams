@@ -1,0 +1,6 @@
+{% if session['user'] is defined %}
+<div class="logged_user_header">
+    Hello, {{ session.user }}
+    <a href="/logout"><button style="margin-left: 100px">Logout</button></a>
+</div>
+{% endif %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Login</title>
+</head>
+<body>
+    {% include 'user_header.j2' %}
+
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        <input type="text" name="username" value="" placeholder="username" /><BR>
+        <small style="margin-bottom: 40px;">no less than 5 symbols</small><BR>
+        <input type="password" name="password" value="" placeholder="password"/><BR>
+        <small>no less than 8 symbols, min 1 Uppercase, min 1 digit</small><BR>
+        <button type="submit">Log in</button>
+    </form>
+</body>
+</html>

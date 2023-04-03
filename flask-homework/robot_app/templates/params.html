@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>User</title>
+</head>
+<body>
+    {% include 'user_header.j2' %}
+
+    <h1>Parameters</h1>
+    <table>
+        <tr>
+            <th>parameter</th>
+            <th>value</th>
+        </tr>
+        {% for key, value in params.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {{ session }}
+</body>
+</html>

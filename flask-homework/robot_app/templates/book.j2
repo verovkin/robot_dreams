@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Book {{ book.title }}</title>
+</head>
+<body class="books">
+    {% include 'user_header.j2' %}
+
+    <ul class="books">
+            <div style="margin-bottom: 15px;">
+                <strong>{{ book.id }}. {{ book.title }}</strong> - {{ book.author }} ({{ book.year }})<BR>
+                <span style="font-size: 20px">{{ book.price }} UAH</span><BR>
+                <span>{{ book.publishing_house_id }}</span>
+                <span>{{ ph.name }}</span>
+            </div>
+    </ul>
+</body>
+</html>

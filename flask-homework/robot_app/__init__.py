@@ -19,7 +19,6 @@ app.config.from_object(AppConfig)
 db.init_app(app)
 
 from .views import *
-from .class_based_views import *
 from .models import *
 
 with app.app_context():

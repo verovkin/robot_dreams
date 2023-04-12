@@ -1,0 +1,42 @@
+body.books {
+    background-color: black;
+}
+
+table, tr, td, th {
+    border: 1px solid red;
+    border-collapse:collapse;
+}
+td, th { padding: 8px 10px}
+
+form input {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+button {
+    font-size: 16px;
+    background-color: #0a66c2;
+    color: white;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.books li {
+    font-size: 14px;
+    color: #AAAAAA;
+    margin-bottom: 10px;
+}
+
+.books li strong {
+    font-size: 18px;
+    color: #CCCCCC;
+    font-weight: 600;
+}
+
+.logged_user_header {
+    width: 100%;
+    padding: 20px 50px;
+    color: black;
+    background-color: #AAAAAA;
+}

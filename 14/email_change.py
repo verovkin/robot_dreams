@@ -29,5 +29,6 @@ with open(txt_file, 'r') as f:
     text = f.read()
 
 email_regex = r'(?![_.-])((?![_.-][_.-])[a-zA-Z\d_.-]){0,63}[a-zA-Z\d]@((?!-)((?!--)[a-zA-Z\d-]){0,63}[a-zA-Z\d]\.){1,2}([a-zA-Z]{2,14}\.)?[a-zA-Z]{2,14}'
+# email_regex = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
 x = re.sub(email_regex, '*@*', text)
 print(x)

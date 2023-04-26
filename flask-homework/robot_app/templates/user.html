@@ -8,6 +8,8 @@
 <body>
     {% include 'user_header.j2' %}
 
-    <h1>User is {{ user }}</h1>
+    <small style="color: grey">ID:{{ user.id }}</small>
+    <h1 style="margin-top: 5px; margin-bottom: 0px;">{{ user.first_name }} {{ user.last_name }}</h1>
+    <p style="margin-top: 5px;">age: {{ user.age }}</p>
 </body>
 </html>

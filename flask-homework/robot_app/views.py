@@ -1,117 +1,166 @@
 import os
 
+from functools import wraps
 import flask
-from robot_app import app
-import random
-from flask import request, redirect, url_for, make_response, session
-from markupsafe import escape
+from robot_app import app, db
+from flask import request, redirect, url_for, session, render_template
+from .models import *
 import werkzeug.exceptions
 import re
 
 
-app.secret_key = b'secret'
+app.secret_key = app.config.get('SECRET_KEY')
 
 
-
-def check_logged_in():
-    return session.get('user')
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('user'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
 def root():
     return '''
-        <a href="/hello">hello</a><BR>
         <a href="/users">users</a><BR>
         <a href="/books">books</a><BR>
-        <a href="/params?abc=123&p=asdjfh">params</a><BR>
+        <a href="/purchases">purchases</a><BR>
         <a href="/login">login</a><BR>
     '''
 
 
-@app.route('/hello')
-def hello():
-    app.logger.info("hello opened")
-    return 'Hello World'
-
-
 @app.route('/users')
+@login_required
 def users_list():
-    if not check_logged_in():
-        return redirect('/login')
+    query = db.select(User)
 
-    names = ['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'David',
-             'Elizabeth', 'William', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Lisa']
-
-    if request.args.get("count"):
+    if request.args.get("size"):
         try:
-            range_count = int(request.args.get("count"))
+            size = int(request.args.get("size"))
         except ValueError:
-            return "Enter a number in count param", 406
-    else:
-        range_count = random.randint(3,7)
+            return "Error. Enter an int in size param", 406
+        query = query.limit(size)
 
-    selected_names = [random.choice(names) for _ in range(range_count)]
-
-    resp = make_response(flask.render_template('users.html', names=selected_names))
-    resp.status_code = 200
-    return resp
-
-
-@app.route('/books')
-def books_list():
-    if not check_logged_in():
-        return redirect('/login')
-
-    books = [('Learning Python', 'Mark Lutz'),
-             ('Head-First Python', 'Paul Barry'),
-             ('Python Distilled', 'David Beazley'),
-             ('Introducing Python (2nd Edition)', 'Bill Lubanovic'),
-             ('Python Programming for Beginners (1st Edition)', 'Philip Robbins'),
-             ('Learn Python in One Day and Learn It Well (2nd Edition)', 'Jamie Chan')]
-
-    if request.args.get("count"):
-        try:
-            range_count = int(request.args.get("count"))
-        except ValueError:
-            return "Enter a number in count param", 406
-    else:
-        range_count = random.randint(2, len(books))
-
-    selected_books = []
-
-    for book in random.choices(books, k=range_count):
-       selected_books.append({'book': book[0], 'author': book[1]})
-
-    return flask.render_template('books.html', books=selected_books)
+    users = db.session.scalars(query)
+    return render_template('users.html', users=users)
 
 
 @app.route('/users/<int:user_id>')
+@login_required
 def show_user(user_id):
-    if not check_logged_in():
-        return redirect('/login')
 
-    if user_id % 2:
-        return flask.render_template('404.html'), 404
+    user = db.get_or_404(User, user_id)
+    return render_template('user.html', user=user)
+
+
+@app.route('/books')
+@login_required
+def books_list():
+    if request.args.get("size"):
+        try:
+            size = int(request.args.get("size"))
+        except ValueError:
+            return "Error. Enter an int in size param", 406
+
+        books = db.session.query(Book, Publishing_house).join(Publishing_house).limit(size).all()
     else:
-        return flask.render_template('user.html', user=user_id), 200
-    #
-    # return (str(user_id), 200) if not user_id % 2 else ('Not found', 404)
+        books = db.session.query(Book, Publishing_house).join(Publishing_house).all()
+
+    return render_template('books.j2', books=books)
 
 
-@app.route('/books/<title>')
-def show_book(title):
-    if not check_logged_in():
-        return redirect('/login')
+@app.route('/books/<int:book_id>')
+@login_required
+def show_book(book_id):
+    book = db.session.query(Book, Publishing_house).join(Publishing_house).filter_by(id=book_id).all()
 
-    app.logger.info(f"The title is {title}")
-    return flask.render_template('book.html', title='title'), 200
+    if len(book) < 1:
+        return flask.render_template('404.html'), 404
+    return render_template('books.j2', books=book)
 
 
-@app.route('/params')
-def show_params():
-    if not check_logged_in():
-        return redirect('/login')
-    return flask.render_template('params.html', params=request.args), 200
+@app.route('/purchases')
+@login_required
+def purchases_list():
+    if request.args.get("size"):
+        try:
+            size = int(request.args.get("size"))
+        except ValueError:
+            return "Error. Enter an int in size param", 406
+        purchases = db.session.query(Purchase, User, Book).join(User).join(Book).limit(size).all()
+
+    else:
+        purchases = db.session.query(Purchase, User, Book).join(User).join(Book).all()
+
+    return render_template('purchases.j2', purchases=purchases)
+
+
+@app.route('/purchases/<int:purchase_id>')
+@login_required
+def show_purchase(purchase_id):
+    purchase = db.session.query(Purchase, User, Book).join(User).join(Book).filter(Purchase.id == purchase_id).all()
+    print(len(purchase))
+    if len(purchase) < 1:
+        return flask.render_template('404.html'), 404
+    return render_template('purchases.j2', purchases=purchase)
+
+
+@app.post('/users')
+# @login_required    # commented for postman POST request
+def add_user():
+
+    user = User(
+        first_name=request.form.get("first_name"),
+        last_name=request.form.get("last_name"),
+        age=request.form.get("age"),
+    )
+    db.session.add(user)
+    db.session.commit()
+    return f'User created', 201
+
+
+@app.post('/books')
+# @login_required    # commented for postman POST request
+def add_book():
+
+    publishing_house_id = request.form.get("publishing_house_id")
+    if not db.session.query(Publishing_house).filter_by(id=publishing_house_id).count():
+        return f"Error, no publishing house with ID={publishing_house_id}", 400
+
+    book = Book(
+        title=request.form.get("title"),
+        author=request.form.get("author"),
+        year=request.form.get("year"),
+        price=request.form.get("price"),
+        publishing_house_id=publishing_house_id,
+    )
+    db.session.add(book)
+    db.session.commit()
+    return f'Book created', 201
+
+
+@app.post('/purchases')
+# @login_required    # commented for postman POST request
+def add_purchase():
+    if not request.form.get("user_id") or not request.form.get("book_id"):
+        return "Error, not all required data", 400
+
+    user_id = request.form.get("user_id")
+    book_id = request.form.get("book_id")
+
+    if not db.session.query(Book).filter_by(id=book_id).count() or \
+            not db.session.query(User).filter_by(id=user_id).count():
+        return "Error, book or user not exist", 400
+
+    purchase = Purchase(
+        user_id=user_id,
+        book_id=book_id,
+    )
+    db.session.add(purchase)
+    db.session.commit()
+    return f'Purchase created', 201
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -139,6 +188,7 @@ def login():
 def logout():
     session.clear()
     return redirect('/login')
+
 
 @app.errorhandler(werkzeug.exceptions.NotFound)
 def default_404(e):

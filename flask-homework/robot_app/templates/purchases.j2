@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Books</title>
+</head>
+<body class="books">
+    {% include 'user_header.j2' %}
+
+    <ul class="books">
+       {% for purchase, user, book in purchases %}
+            <div style="margin-bottom: 15px;">
+                <strong>{{ purchase.id }}. {{ book.title }}</strong><BR>
+                Bought by {{ user.first_name }} {{ user.last_name }} - {{ purchase.date }}<BR>
+                <span style="font-size: 20px">{{ book.price }} UAH</span><BR>
+
+            </div>
+       {% endfor %}
+    </ul>
+</body>
+</html>

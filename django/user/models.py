@@ -1,4 +1,5 @@
 from django.db import models
+# from django.urls import reverse
 
 
 class User(models.Model):
@@ -13,3 +14,7 @@ class User(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.first_name} {self.last_name} - {self.age} y.o.'
+
+    #
+    # def get_absolute_url(self):
+    #     return reverse('user-detail', args=[self.id])

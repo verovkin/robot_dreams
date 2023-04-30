@@ -1,11 +1,17 @@
-from django.shortcuts import render
-from django.core import serializers
-from django.http import HttpResponse
-from .models import User
-import json
+from django.views.generic import ListView, CreateView, DetailView
+from user.models import User
+from user.forms import UserForm
+
+class UserListView(ListView):
+    model = User
 
 
-def show_users(request):
-    users = User.objects.all()
-    users_json = serializers.serialize('json', users)
-    return HttpResponse(users_json, content_type='application/json')
+class UserDetailView(DetailView):
+    queryset = User.objects.all()
+
+
+class UserCreateView(CreateView):
+    model = User
+    form_class = UserForm
+    # fields = ('first_name', 'last_name', 'age',)
+

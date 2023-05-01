@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
+from django.urls import reverse
 import datetime
 
 
@@ -17,3 +18,7 @@ class Book(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.title}, {self.author}, {self.year} - {self.price}'
+
+
+    def get_absolute_url(self):
+        return reverse('books-detail', args=[self.id])

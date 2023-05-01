@@ -12,8 +12,8 @@ class User(models.Model):
         verbose_name = 'Buyer'
         verbose_name_plural = 'Buyers'
 
-    # def __str__(self):
-    #     return f'{self.id}. {self.first_name} {self.last_name} - {self.age} y.o.'
+    def __str__(self):
+        return f'{self.id}. {self.first_name} {self.last_name} - {self.age} y.o.'
 
     def get_absolute_url(self):
-        return reverse('user-detail', args=[self.id])
+        return reverse('users-detail', args=[self.id])

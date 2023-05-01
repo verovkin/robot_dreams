@@ -1,6 +1,5 @@
 from django.db import models
-from datetime import datetime
-
+from django.urls import reverse
 
 class Purchase(models.Model):
     user_id = models.ForeignKey('user.User', related_name='purchases', on_delete=models.SET_NULL, null=True)
@@ -15,3 +14,6 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f'{self.id}, {self.purchase_date.strftime("%m/%d/%Y, %H:%M:%S")}, {self.book_id.title}, {self.user_id.first_name} {self.user_id.last_name} - {self.book_id.price}'
+
+    def get_absolute_url(self):
+        return reverse('purchases-detail', args=[self.id])

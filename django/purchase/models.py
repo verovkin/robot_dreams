@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 
+
 class Purchase(models.Model):
     user_id = models.ForeignKey('user.User', related_name='purchases', on_delete=models.SET_NULL, null=True)
     book_id = models.ForeignKey('book.Book', related_name='purchases', on_delete=models.SET_NULL, null=True)

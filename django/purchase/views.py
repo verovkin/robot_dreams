@@ -12,4 +12,4 @@ class PurchaseDetailView(DetailView):
 
 class PurchaseCreateView(CreateView):
     model = Purchase
-    fields = ('',)
+    fields = ('book_id_id', 'user_id_id',)

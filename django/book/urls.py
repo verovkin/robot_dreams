@@ -1,8 +1,15 @@
 from django.urls import path
-from book.views import BookListView, BookDetailView, BookCreateView
+from rest_framework.routers import SimpleRouter
+from book.views import BookListView, BookDetailView, BookCreateView, BookViewSet
 
 urlpatterns = [
-    path('', BookListView.as_view(), name='books-list'),
+    path('list', BookListView.as_view(), name='books-list'),
     path('<int:pk>', BookDetailView.as_view(), name='books-detail'),
     path('create', BookCreateView.as_view(), name='books-create')
 ]
+
+router = SimpleRouter()
+router.register('', BookViewSet)
+
+urlpatterns += router.urls
+

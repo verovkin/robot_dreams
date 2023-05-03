@@ -1,11 +1,15 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.core import serializers
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Book
 
 
+class BookListView(ListView):
+    model = Book
 
-def show_books(request):
-    books = Book.objects.all()
-    books_json = serializers.serialize('json', books)
-    return HttpResponse(books_json, content_type='application/json')
+
+class BookDetailView(DetailView):
+    queryset = Book.objects.all()
+
+
+class BookCreateView(CreateView):
+    model = Book
+    fields = ['title', 'author', 'year', 'price']

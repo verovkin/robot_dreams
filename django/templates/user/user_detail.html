@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>User #{{ object.id }}</h1>
+    <h2>{{ object.first_name }} {{ object.last_name }} ({{ object.age }})</h2>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Purchases</h1>
+    {% for purchase in purchase_list %}
+        <div >
+            <div style="color:#999999; font-size: 12px">{{ purchase.id }} {{ purchase.purchase_date }}</div>
+            <div style="font-size: 16px;"><strong>{{ purchase.book_id.title }}</strong> ({{ purchase.book_id.author }})</div>
+            <div>{{ purchase.user_id.first_name }} {{ purchase.user_id.last_name }}</div>
+            <div>{{ purchase.book_id.price }} UAH</div>
+        </div>
+        <HR>
+        {% endfor %}
+{% endblock %}

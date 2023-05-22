@@ -70,12 +70,10 @@ class UserViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         my_task_list.delay()  # calling a task
-        print("yo")
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         my_task_retrieve.delay(instance.id)
-        print("popo")
         return Response(serializer.data)

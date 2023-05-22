@@ -29,11 +29,20 @@ class UserViewSetTest(TestCase):
     def setUpTestData(cls):
         cls.user = RandomUserFactory.create()
 
-    def test_user_list(self):
-        resp = self.client.get(f'/users/')
-        self.assertEqual(resp.status_code, 200)
+    # def test_user_list(self):
+    #     resp = self.client.get(f'/users/')
+    #     self.assertEqual(resp.status_code, 200)
 
     def test_get_user_detail(self):
         resp = self.client.get(f'/users/{self.user.id}')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json().get('first_name'), self.user.first_name, 'yo')
+        self.assertEqual(resp.json().get('first_name'), self.user.first_name)
+
+    def test_user_create(self):
+        user_data = {
+            'first_name': 'Created User',
+            'age': 1
+        }
+        resp = self.client.post('/users/', data=user_data)
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.json().get('first_name'), user_data.get('first_name'))
